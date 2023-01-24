@@ -22,7 +22,8 @@ export const Login: React.FC = () => {
     if (isLogin) {
       login(data, {
         onSuccess: res => {
-          AuthCtx.login(res.idToken)
+          const expirationTime = new Date(new Date().getTime() + +res.expiresIn * 1000)
+          AuthCtx.login(res.idToken, +expirationTime)
           history.replace('/')
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,8 +35,7 @@ export const Login: React.FC = () => {
       })
     } else {
       signUp(data, {
-        onSuccess: res => {
-          AuthCtx.login(res.idToken)
+        onSuccess: () => {
           setIsLogin(!isLogin)
           notification.success({
             message: `You've successfully signed up with username: ${data.username}`

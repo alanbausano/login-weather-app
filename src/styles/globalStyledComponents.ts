@@ -11,7 +11,7 @@ const StyledCenteredContainer = styled.div`
 
 const StyledLogin = styled.div`
   width: 30%;
-  height: 50%;
+  min-height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,6 +19,15 @@ const StyledLogin = styled.div`
   border: 0.5px solid lightgray;
   flex-direction: column;
 `
+const StyledHeader = styled.div`
+  display: flex;
+  height: 80px;
+  background-color: ${props => props.theme.darkBlue};
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+`
+
 const StyledCard = styled(Card)`
   padding: ${props => props.theme.sm};
   width: 1300px;
@@ -63,6 +72,7 @@ export {
   StyledButton,
   StyledCard,
   StyledCenteredContainer,
+  StyledHeader,
   StyledInfo,
   StyledInfoTitle,
   StyledLargeInfo,

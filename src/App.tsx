@@ -14,7 +14,7 @@ const App = () => {
       <Switch>
         <Route exact path="/login" component={Login} />
         <Route exact path="/">
-          {token !== undefined ? <Main /> : <Redirect to="/login" />}
+          {token ? <Main /> : <Redirect to="/login" />}
         </Route>
         <Route path="*">
           <Redirect to="/login" />

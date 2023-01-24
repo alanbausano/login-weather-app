@@ -1,3 +1,11 @@
+import { Dashboard } from './Dashboard'
+import { Header } from './Header'
+
 export const Main = () => {
-  return <div>Main</div>
+  return (
+    <div>
+      <Header />
+      <Dashboard />
+    </div>
+  )
 }

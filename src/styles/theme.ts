@@ -10,6 +10,7 @@ const size = {
 
 const grayFonts = '#5A5A5A'
 const cardBg = '#CCD1D1 '
+const darkBlue = '#022c57'
 
 const theme = {
   xs: `${size.xs}`,
@@ -19,7 +20,8 @@ const theme = {
   xl: `${size.xl}`,
   xxl: `${size.xxl}`,
   grayFonts,
-  cardBg
+  cardBg,
+  darkBlue
 }
 
 export { theme }
