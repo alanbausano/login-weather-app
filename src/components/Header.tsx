@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import AuthContext from '../context/authContext'
+import CitiesContext from '../context/citiesContext'
 import { useWeathers } from '../hooks/useWeatherInfo'
 import { StyledHeader } from '../styles/globalStyledComponents'
 import { CityWeatherResponse } from '../types/types'
@@ -15,6 +16,7 @@ export const Header = () => {
   const [valueDebounced] = useDebounce(cityValue, 450)
   const { data, searchCityWeather } = useWeathers(valueDebounced)
   const [options, setOptions] = useState<{ value: string; key: number }[] | undefined>()
+  const { addCities } = useContext(CitiesContext)
   const onSearch = (value: string) => {
     setCityValue(value)
   }
@@ -33,7 +35,9 @@ export const Header = () => {
   }, [valueDebounced])
 
   const onSelect = () => {
-    console.log(data)
+    addCities(data!)
+    localStorage.setItem('city', JSON.stringify(data))
+    setCityValue(undefined)
   }
   return (
     <StyledHeader>
