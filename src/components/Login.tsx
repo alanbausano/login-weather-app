@@ -24,6 +24,8 @@ export const Login: React.FC = () => {
         onSuccess: res => {
           const expirationTime = new Date(new Date().getTime() + +res.expiresIn * 1000)
           AuthCtx.login(res.idToken, +expirationTime)
+          AuthCtx.setUser(res.email)
+          localStorage.setItem('user', res.email.toString())
           history.replace('/')
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

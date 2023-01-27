@@ -1,56 +1,80 @@
 import { DeleteOutlined } from '@ant-design/icons'
+import { Col, Tooltip } from 'antd'
 import { useContext } from 'react'
 
 import CitiesContext from '../context/citiesContext'
 import {
   StyledCardsContainer,
   StyledCenteredCardDaysCol,
+  StyledCenteredRow,
   StyledDayCard,
+  StyledDeleteButton,
   StyledInfo,
   StyledInfoTitle,
+  StyledLargeInfo,
   StyledMediumInfo,
   StyledRow
 } from '../styles/globalStyledComponents'
 import { CityWeatherResponse } from '../types/types'
 
 export const Dashboard = () => {
-  const { city: cities } = useContext(CitiesContext)
-  return (
+  const { city: cities, deleteCities } = useContext(CitiesContext)
+  const handleDelete = (id: number) => {
+    deleteCities(id)
+  }
+
+  return !cities?.length ? (
+    <StyledCenteredRow>
+      <Col>
+        <StyledLargeInfo>No cities added yet</StyledLargeInfo>
+      </Col>
+    </StyledCenteredRow>
+  ) : (
     <StyledCardsContainer>
       <StyledRow>
         {cities?.map((city: CityWeatherResponse) => (
-          <StyledDayCard
-            key={city.id}
-            actions={[
-              <DeleteOutlined
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              />
-            ]}
-          >
+          <StyledDayCard key={city.id}>
             <StyledRow>
               <StyledCenteredCardDaysCol>
                 <StyledMediumInfo>{city.name}</StyledMediumInfo>
+                <StyledLargeInfo>
+                  {city.main.temp && `${Math.round(city?.main.temp)}°C`}
+                </StyledLargeInfo>
                 <StyledInfoTitle>
                   {city.weather.map(cityMapped => cityMapped.description)}
                 </StyledInfoTitle>
                 <img
-                  src={`http://openweathermap.org/img/wn/${city?.weather?.map(
-                    cityMapped => cityMapped.icon
-                  )}.png`}
+                  src={`http://openweathermap.org/img/wn/${city?.weather[0].icon}.png`}
                   alt="icon"
                   width="60px"
                 />
               </StyledCenteredCardDaysCol>
             </StyledRow>
             <StyledRow>
-              <StyledInfo>Min:</StyledInfo>
-              <StyledMediumInfo>{Math.round(city.main.temp_min)}°C</StyledMediumInfo>
-              <StyledInfo>- Max:</StyledInfo>
-              <StyledMediumInfo>{Math.round(city.main.temp_max)}°C</StyledMediumInfo>
+              <Col>
+                <StyledInfoTitle>Today: </StyledInfoTitle>
+                <StyledInfoTitle>Min:</StyledInfoTitle>
+                <StyledInfo>{Math.round(city.main.temp_min)}°C</StyledInfo>
+                <StyledInfoTitle> Max:</StyledInfoTitle>
+                <StyledInfo>{Math.round(city.main.temp_max)}°C</StyledInfo>
+              </Col>
+            </StyledRow>
+            <StyledRow>
+              <Col>
+                <StyledInfoTitle>Humidity: </StyledInfoTitle>
+                <StyledInfo>{city.main.humidity}%</StyledInfo>
+              </Col>
+              <Col>
+                <StyledInfoTitle>Wind: </StyledInfoTitle>
+                <StyledInfo>{city.wind.speed} km/h</StyledInfo>
+              </Col>
+            </StyledRow>
+            <StyledRow>
+              <Tooltip title="Delete">
+                <StyledDeleteButton danger onClick={() => handleDelete(city.id)}>
+                  <DeleteOutlined />
+                </StyledDeleteButton>
+              </Tooltip>
             </StyledRow>
           </StyledDayCard>
         ))}

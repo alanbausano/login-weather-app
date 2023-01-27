@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { QUERY_KEYS } from '../../enums/queryKeys'
 import { WeatherApi } from './api'
 
-const useWeathers = (filter?: string) => {
+const useWeathers = (filter?: string, ids?: number[]) => {
   const queryClient = useQueryClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onError = (error: any) => {
@@ -12,6 +12,7 @@ const useWeathers = (filter?: string) => {
       message: error.response.data.message
     })
   }
+
   const { mutate, data, isLoading } = useMutation(
     [QUERY_KEYS.WEATHER_INFO, { filter }],
     WeatherApi.getWeather,
@@ -23,10 +24,19 @@ const useWeathers = (filter?: string) => {
     }
   )
 
+  const { mutate: getByCitiesById, data: notifications } = useMutation(
+    [QUERY_KEYS.NOTIFICATION_QUERY],
+    WeatherApi.getWeatherByIds
+  )
+
+  const citiesByIds = notifications?.list
+
   return {
     data,
     isLoading,
-    searchCityWeather: mutate
+    citiesByIds,
+    searchCityWeather: mutate,
+    getByCitiesById
   }
 }
 

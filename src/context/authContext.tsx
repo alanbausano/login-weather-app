@@ -1,9 +1,19 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import React, {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
 type ContextState = {
   token: string | null | undefined
   isLoggedIn: boolean
+  user: string | undefined
+  setUser: Dispatch<SetStateAction<string>>
   login: (token: string, expirationTime: number) => void
   logout: () => void
 }
@@ -11,6 +21,8 @@ type ContextState = {
 const initialState = {
   token: '',
   isLoggedIn: false,
+  user: '',
+  setUser: () => {},
   login: (token: string | null, expirationTime: number) => {},
   logout: () => {}
 }
@@ -39,8 +51,10 @@ const retrieveStoredToken = () => {
 export const AuthContextProvider = (props: { children: React.ReactNode }) => {
   const tokenData = retrieveStoredToken()
   const initialToken = tokenData?.storedToken
+  const storageUser = localStorage.getItem('user')
   const [timer, setTimer] = useState<NodeJS.Timeout>()
   const [token, setToken] = useState<string | null | undefined>(initialToken)
+  const [user, setUser] = useState<string>(storageUser!)
 
   const isUserLoggedIn = !!token
 
@@ -48,6 +62,8 @@ export const AuthContextProvider = (props: { children: React.ReactNode }) => {
     setToken(null)
     localStorage.removeItem('token')
     localStorage.removeItem('expTime')
+    localStorage.removeItem('city')
+    localStorage.removeItem('user')
     if (timer) {
       clearTimeout(timer)
     }
@@ -75,9 +91,11 @@ export const AuthContextProvider = (props: { children: React.ReactNode }) => {
       token,
       isLoggedIn: isUserLoggedIn,
       login: loginHandler,
-      logout: logoutHandler
+      logout: logoutHandler,
+      user,
+      setUser
     }
-  }, [isUserLoggedIn, loginHandler, logoutHandler, token])
+  }, [isUserLoggedIn, loginHandler, logoutHandler, token, user])
 
   return <AuthContext.Provider value={contextValue}>{props.children}</AuthContext.Provider>
 }

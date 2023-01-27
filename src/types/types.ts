@@ -108,3 +108,8 @@ export type CityWeatherResponse = {
     deg: number
   }
 }
+
+export type CityByIds = {
+  count: number
+  list: CityWeatherResponse[]
+}
