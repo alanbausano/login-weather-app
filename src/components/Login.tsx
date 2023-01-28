@@ -21,8 +21,8 @@ export const Login: React.FC = () => {
   const AuthCtx = useContext(AuthContext)
   const onError = (error: unknown) => {
     const apiError = error as ApiError
-    notification.warning({
-      message: apiError.response.data.message
+    notification.error({
+      message: `${apiError.response.data.error.message.replace('_', ' ').toLowerCase()}`
     })
   }
   const onFinish = (data: { username: string; password: string; returnSecureToken: boolean }) => {
@@ -48,7 +48,7 @@ export const Login: React.FC = () => {
         onError: (error: unknown) => {
           const apiError = error as ApiError
           notification.error({
-            message: `${apiError.response.data.message.replace('_', ' ').toLowerCase()}`
+            message: `${apiError.response.data.error.message.replace('_', ' ').toLowerCase()}`
           })
         }
       })

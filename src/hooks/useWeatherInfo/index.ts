@@ -9,7 +9,7 @@ const useWeathers = (filter?: string) => {
   const queryClient = useQueryClient()
   const onError = (error: ApiError) => {
     notification.warning({
-      message: error.response.data.message
+      message: error.response.data.error.message
     })
   }
 

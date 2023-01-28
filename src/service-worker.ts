@@ -57,6 +57,37 @@ registerRoute(
   createHandlerBoundToURL(`${process.env.PUBLIC_URL}/index.html`)
 )
 
+const iconsArray = [
+  '01d',
+  '01n',
+  '02d',
+  '02n',
+  '03d',
+  '03n',
+  '04d',
+  '04n',
+  '09d',
+  '09n',
+  '10d',
+  '10n',
+  '11d',
+  '11n',
+  '13d',
+  '13n',
+  '50d',
+  '50n'
+]
+
+const currentTime = new Date()
+iconsArray.forEach(icon => {
+  precacheAndRoute([
+    {
+      url: `https://openweathermap.org/img/wn/${icon}.png`,
+      revision: currentTime.toISOString()
+    }
+  ])
+})
+
 registerRoute(
   /https:\/\/api.openweathermap.org\/data\/2.5\//,
   new StaleWhileRevalidate({

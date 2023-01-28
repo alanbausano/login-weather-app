@@ -117,7 +117,9 @@ export type CityByIds = {
 export interface ApiError {
   response: {
     data: {
-      message: string
+      error: {
+        message: string
+      }
     }
   }
 }

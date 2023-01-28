@@ -1,8 +1,9 @@
 import { DeleteOutlined } from '@ant-design/icons'
-import { Col, Tooltip } from 'antd'
+import { Col, Spin, Tooltip } from 'antd'
 import { useContext } from 'react'
 
 import CitiesContext from '../context/citiesContext'
+import { useWeathers } from '../hooks/useWeatherInfo'
 import {
   StyledCardsContainer,
   StyledCenteredCardDaysCol,
@@ -19,6 +20,7 @@ import { CityWeatherResponse } from '../types/types'
 
 export const Dashboard = () => {
   const { city: cities, deleteCities } = useContext(CitiesContext)
+  const { isLoading } = useWeathers()
   const handleDelete = (id: number) => {
     deleteCities(id)
   }
@@ -43,11 +45,13 @@ export const Dashboard = () => {
                 <StyledInfoTitle>
                   {city.weather.map(cityMapped => cityMapped.description)}
                 </StyledInfoTitle>
-                <img
-                  src={`http://openweathermap.org/img/wn/${city?.weather[0].icon}.png`}
-                  alt="icon"
-                  width="60px"
-                />
+                <Spin spinning={isLoading}>
+                  <img
+                    src={`http://openweathermap.org/img/wn/${city?.weather[0].icon}.png`}
+                    alt="icon"
+                    width="60px"
+                  />
+                </Spin>
               </StyledCenteredCardDaysCol>
             </StyledRow>
             <StyledRow>
