@@ -113,3 +113,11 @@ export type CityByIds = {
   count: number
   list: CityWeatherResponse[]
 }
+
+export interface ApiError {
+  response: {
+    data: {
+      message: string
+    }
+  }
+}

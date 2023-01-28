@@ -1,5 +1,5 @@
-import { UserOutlined } from '@ant-design/icons'
-import { AutoComplete, Avatar, Button, Input, notification } from 'antd'
+import { ApiOutlined, UserOutlined } from '@ant-design/icons'
+import { AutoComplete, Avatar, Button, Col, Input, notification } from 'antd'
 import { useContext, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -17,8 +17,29 @@ export const Header = () => {
   const [valueDebounced] = useDebounce(cityValue, 450)
   const [options, setOptions] = useState<{ value: string; key: number }[] | undefined>()
   const { addCities, deleteAllCities, city: cities } = useContext(CitiesContext)
-  const [citiesIds, setCitiesIds] = useState<number[] | undefined>(cities?.map(city => city.id))
-  const { data, searchCityWeather } = useWeathers(valueDebounced, citiesIds)
+  const { data, searchCityWeather, isLoading } = useWeathers(valueDebounced)
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+
+  const updateOnlineStatus = () => {
+    setIsOnline(navigator.onLine)
+  }
+
+  useEffect(() => {
+    window.addEventListener('online', updateOnlineStatus)
+    window.addEventListener('offline', updateOnlineStatus)
+    return () => {
+      window.removeEventListener('online', updateOnlineStatus)
+      window.removeEventListener('offline', updateOnlineStatus)
+    }
+  }, [])
+  useEffect(() => {
+    if (!isOnline) {
+      notification.warning({
+        message: 'You are currently offline. Some features may not be available.'
+      })
+    }
+  }, [isOnline])
+
   const onSearch = (value: string) => {
     setCityValue(value)
   }
@@ -35,18 +56,10 @@ export const Header = () => {
   useEffect(() => {
     const notificationInterval = setInterval(() => {
       setAlerts()
-    }, 300000) // 5 minutes (in milliseconds)
+    }, 180000) // 3 minutes (in milliseconds)
     return () => clearInterval(notificationInterval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cities])
-
-  useEffect(() => {
-    const citiesMappedIds = cities?.map(city => city.id)
-    if (cities) {
-      setCitiesIds(citiesMappedIds)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     if (!cityValue) {
@@ -86,8 +99,20 @@ export const Header = () => {
         options={options}
         onSelect={onSelect}
       >
-        <Search placeholder="Search for cities" allowClear />
+        <Search placeholder="Search for cities" allowClear loading={isLoading} />
       </AutoComplete>
+      {!isOnline && (
+        <Col>
+          <ApiOutlined
+            style={{
+              backgroundColor: '#ff4d4f',
+              fontSize: '24px',
+              borderRadius: '50px',
+              padding: '9px'
+            }}
+          />
+        </Col>
+      )}
       <StyledUser>
         <Avatar icon={<UserOutlined />} />
         {user}

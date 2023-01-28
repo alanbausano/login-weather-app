@@ -2,12 +2,12 @@ import { notification } from 'antd'
 import { useMutation, useQueryClient } from 'react-query'
 
 import { QUERY_KEYS } from '../../enums/queryKeys'
+import { ApiError } from '../../types/types'
 import { WeatherApi } from './api'
 
-const useWeathers = (filter?: string, ids?: number[]) => {
+const useWeathers = (filter?: string) => {
   const queryClient = useQueryClient()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onError = (error: any) => {
+  const onError = (error: ApiError) => {
     notification.warning({
       message: error.response.data.message
     })

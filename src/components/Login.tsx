@@ -11,6 +11,7 @@ import {
   StyledLogin,
   StyledTitle
 } from '../styles/globalStyledComponents'
+import { ApiError } from '../types/types'
 
 export const Login: React.FC = () => {
   const history = useHistory()
@@ -18,6 +19,12 @@ export const Login: React.FC = () => {
   const { signUp, isSigningUp } = useSignUp()
   const { login, isLoggingIn } = useLogin()
   const AuthCtx = useContext(AuthContext)
+  const onError = (error: unknown) => {
+    const apiError = error as ApiError
+    notification.warning({
+      message: apiError.response.data.message
+    })
+  }
   const onFinish = (data: { username: string; password: string; returnSecureToken: boolean }) => {
     if (isLogin) {
       login(data, {
@@ -28,12 +35,7 @@ export const Login: React.FC = () => {
           localStorage.setItem('user', res.email.toString())
           history.replace('/')
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (err: any) => {
-          notification.error({
-            message: `${err.response.data.error.message.replace('_', ' ').toLowerCase()}`
-          })
-        }
+        onError
       })
     } else {
       signUp(data, {
@@ -43,10 +45,10 @@ export const Login: React.FC = () => {
             message: `You've successfully signed up with username: ${data.username}`
           })
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (err: any) => {
+        onError: (error: unknown) => {
+          const apiError = error as ApiError
           notification.error({
-            message: `${err.response.data.error.message.replace('_', ' ').toLowerCase()}`
+            message: `${apiError.response.data.message.replace('_', ' ').toLowerCase()}`
           })
         }
       })

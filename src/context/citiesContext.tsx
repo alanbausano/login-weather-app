@@ -65,7 +65,7 @@ export const CitiesContextProvider = (props: { children: React.ReactNode }) => {
           }
         })
       }
-    }, 300000) // 5 minutes (in milliseconds)
+    }, 180000) // 3 minutes (in milliseconds)
     return () => clearInterval(fetchInterval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city])
